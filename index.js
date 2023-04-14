@@ -115,6 +115,20 @@ app.get('/seatStatus', async (req, res) => {
   });
 });
 
+app.delete('/delete', async (req, res) => {
+  let coach = await Coach.findOne({coachId:1}).lean();
+  if(!coach) return;
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 7; j++) {
+      coach.seats[i][j] = 0;
+    }
+  }
+  await Coach.updateOne({coachId:1}, coach);
+  res.send({
+    seats: coach ? coach.seats : []
+  });
+}
+
 // starting server
 app.listen(3000, () => console.log('Server listening on port 3000'));
 
