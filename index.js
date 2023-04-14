@@ -24,12 +24,14 @@ app.post('/bookSeats', async (req, res) => {
   }
 
   let coach = await Coach.findOne({coachId:1}).lean();
+  let firstFlg = 0;
   if (!coach) {
+    firstFlg = 1;
     coach = new Coach({
       coachId: 1,
       seats: Array(11).fill().map(() => Array(7).fill(0)),
       availableSeats: Array(11).fill(7)
-    }).lean();
+    });
     coach.seats[10].fill(-2, 3);
     coach.availableSeats[10] = 3;
   }
@@ -86,13 +88,17 @@ app.post('/bookSeats', async (req, res) => {
     }
   }
 
-
-  await Coach.updateOne({coachId:1}, coach).then((result) => {
-    console.log('Update result:', result);
-  })
-  .catch((err) => {
-    console.log('Error updating document:', err);
-  });
+  if(firstFlg===1){
+    await coach.save();
+  }
+  else {
+    await Coach.updateOne({coachId:1}, coach).then((result) => {
+      console.log('Update result:', result);
+    })
+    .catch((err) => {
+      console.log('Error updating document:', err);
+    });
+  }
 
   res.send({
     message: `Booked ${n} seats`,
