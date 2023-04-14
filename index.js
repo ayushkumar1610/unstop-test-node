@@ -127,7 +127,7 @@ app.delete('/delete', async (req, res) => {
   res.send({
     seats: coach ? coach.seats : []
   });
-}
+});
 
 // starting server
 app.listen(3000, () => console.log('Server listening on port 3000'));
