@@ -29,7 +29,7 @@ app.post('/bookSeats', async (req, res) => {
       coachId: 1,
       seats: Array(11).fill().map(() => Array(7).fill(0)),
       availableSeats: Array(11).fill(7)
-    });
+    }).lean();
     coach.seats[10].fill(-2, 3);
     coach.availableSeats[10] = 3;
   }
