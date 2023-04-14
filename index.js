@@ -30,10 +30,17 @@ app.post('/bookSeats', async (req, res) => {
       seats: Array(11).fill().map(() => Array(7).fill(0)),
       availableSeats: Array(11).fill(7)
     });
-    coach.seats[10].fill(-1, 3);
+    coach.seats[10].fill(-2, 3);
     coach.availableSeats[10] = 3;
   }
 
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 7; j++) {
+      if (coach.seats[i][j] === 1) {
+        coach.seats[i][j] = -1;
+      }
+    }
+  }
 
   let booked = false;
   for (let i = 0; i < 11 && !booked; i++) {
