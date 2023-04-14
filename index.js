@@ -123,6 +123,10 @@ app.delete('/delete', async (req, res) => {
       coach.seats[i][j] = 0;
     }
   }
+  coach.seats[10].fill(-2, 3);
+  coach.availableSeats = Array(11).fill(7);
+  coach.availableSeats[10] = 3;
+  
   await Coach.updateOne({coachId:1}, coach);
   res.send({
     seats: coach ? coach.seats : []
