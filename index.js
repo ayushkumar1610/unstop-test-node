@@ -46,7 +46,7 @@ app.post('/bookSeats', async (req, res) => {
 
   let booked = false;
   for (let i = 0; i < 11 && !booked; i++) {
-    if (coach.availableSeats[i] >= n && isMin(i)==coach.availableSeats[i]) {
+    if (coach.availableSeats[i] >= n && isMin(i,coach,booked)==coach.availableSeats[i]) {
       for (let j = 0; j < 7 && !booked; j++) {
         if (coach.seats[i][j] === 0) {
           let k = j;
@@ -137,7 +137,7 @@ app.delete('/delete', async (req, res) => {
 app.listen(3000, () => console.log('Server listening on port 3000'));
 
 // utility functions
-function isMin(i, coach) {
+function isMin(i, coach, booked) {
   let min = Infinity;
   for(let i=0; i<11 && !booked; i++){
     if(coach.availableSeats[i]<min){
