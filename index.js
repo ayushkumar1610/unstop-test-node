@@ -44,9 +44,19 @@ app.post('/bookSeats', async (req, res) => {
     }
   }
 
+  function isMin(i) {
+    let min = Infinity;
+    for(let i=0; i<11 && !booked; i++){
+      if(coach.availableSeats[i]<min){
+        min = coach.availableSeats[i];
+      }
+    }
+    return min;
+  }
+  
   let booked = false;
   for (let i = 0; i < 11 && !booked; i++) {
-    if (coach.availableSeats[i] >= n) {
+    if (coach.availableSeats[i] >= n && isMin(i)==coach.availableSeats[i]) {
       for (let j = 0; j < 7 && !booked; j++) {
         if (coach.seats[i][j] === 0) {
           let k = j;
@@ -69,24 +79,18 @@ app.post('/bookSeats', async (req, res) => {
       }
     }
 
-    let minDistance = Infinity;
-    let bestCombination = null;
-    let combinations = getCombinations(emptySeats, n);
-    for (let combination of combinations) {
-      let distance = getDistance(combination);
-      if (distance < minDistance) {
-        minDistance = distance;
-        bestCombination = combination;
-      }
-    }
+   // let minDistance = Infinity;
+//     let bestCombination = null;
+//     let combinations = getCombinations(emptySeats, n);
+//     for (let combination of combinations) {
+//       let distance = getDistance(combination);
+//       if (distance < minDistance) {
+//         minDistance = distance;
+//         bestCombination = combination;
+//       }
+//     }
 
-    if (bestCombination) {
-      for (let seat of bestCombination) {
-        coach.seats[seat[0]][seat[1]] = 1;
-        coach.availableSeats[seat[0]]--;
-      }
-    }
-  }
+//     
 
   if(firstFlg===1){
     await coach.save();
