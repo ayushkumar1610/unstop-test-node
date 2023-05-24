@@ -44,16 +44,6 @@ app.post('/bookSeats', async (req, res) => {
     }
   }
 
-  function isMin(i) {
-    let min = Infinity;
-    for(let i=0; i<11 && !booked; i++){
-      if(coach.availableSeats[i]<min){
-        min = coach.availableSeats[i];
-      }
-    }
-    return min;
-  }
-  
   let booked = false;
   for (let i = 0; i < 11 && !booked; i++) {
     if (coach.availableSeats[i] >= n && isMin(i)==coach.availableSeats[i]) {
@@ -79,18 +69,24 @@ app.post('/bookSeats', async (req, res) => {
       }
     }
 
-   // let minDistance = Infinity;
-//     let bestCombination = null;
-//     let combinations = getCombinations(emptySeats, n);
-//     for (let combination of combinations) {
-//       let distance = getDistance(combination);
-//       if (distance < minDistance) {
-//         minDistance = distance;
-//         bestCombination = combination;
-//       }
-//     }
+    // let minDistance = Infinity;
+    // let bestCombination = null;
+    // let combinations = getCombinations(emptySeats, n);
+    // for (let combination of combinations) {
+    //   let distance = getDistance(combination);
+    //   if (distance < minDistance) {
+    //     minDistance = distance;
+    //     bestCombination = combination;
+    //   }
+    // }
 
-//     
+    // if (bestCombination) {
+    //   for (let seat of bestCombination) {
+    //     coach.seats[seat[0]][seat[1]] = 1;
+    //     coach.availableSeats[seat[0]]--;
+    //   }
+    // }
+  }
 
   if(firstFlg===1){
     await coach.save();
@@ -141,6 +137,16 @@ app.delete('/delete', async (req, res) => {
 app.listen(3000, () => console.log('Server listening on port 3000'));
 
 // utility functions
+function isMin(i, coach) {
+  let min = Infinity;
+  for(let i=0; i<11 && !booked; i++){
+    if(coach.availableSeats[i]<min){
+      min = coach.availableSeats[i];
+    }
+  }
+  return min;
+}
+
 function getCombinations(arr, n) {
   if (n === 0) return [[]];
   let result = [];
