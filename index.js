@@ -141,7 +141,7 @@ function isMin(coach) {
   let min = Infinity;
   for(let i=0; i<11; i++){
     if(coach.availableSeats[i]<min){
-      console.log(min. coach.availableSeats[i]);
+      console.log(min+" ================== " +coach.availableSeats[i]);
       min = coach.availableSeats[i];
     }
   }
