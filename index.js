@@ -18,8 +18,8 @@ const Coach = mongoose.model('Coach', coachSchema);
 // API to book seats in a coach
 app.post('/bookSeats', async (req, res) => {
   const { n } = req.body;
-  if (n > 8) {
-    res.status(400).send('Cannot book more than 8 seats at a time');
+  if (n > 7) {
+    res.status(400).send('Cannot book more than 7 seats at a time');
     return;
   }
 
@@ -29,15 +29,15 @@ app.post('/bookSeats', async (req, res) => {
     firstFlg = 1;
     coach = new Coach({
       coachId: 1,
-      seats: Array(11).fill().map(() => Array(8).fill(0)),
-      availableSeats: Array(11).fill(8)
+      seats: Array(11).fill().map(() => Array(7).fill(0)),
+      availableSeats: Array(11).fill(7)
     });
-    coach.seats[10].fill(-2, 2);
-    coach.availableSeats[10] = 2;
+    coach.seats[10].fill(-2, 3);
+    coach.availableSeats[10] = 3;
   }
 
   for (let i = 0; i < 11; i++) {
-    for (let j = 0; j < 8; j++) {
+    for (let j = 0; j < 7; j++) {
       if (coach.seats[i][j] === 1) {
         coach.seats[i][j] = -1;
       }
@@ -47,10 +47,10 @@ app.post('/bookSeats', async (req, res) => {
   let booked = false;
   for (let i = 0; i < 11 && !booked; i++) {
     if (coach.availableSeats[i] >= n) {
-      for (let j = 0; j < 8 && !booked; j++) {
+      for (let j = 0; j < 7 && !booked; j++) {
         if (coach.seats[i][j] === 0) {
           let k = j;
-          while (k < 8 && coach.seats[i][k] === 0 && k - j + 1 <= n) k++;
+          while (k < 7 && coach.seats[i][k] === 0 && k - j + 1 <= n) k++;
           if (k - j === n) {
             for (let l = j; l < k; l++) coach.seats[i][l] = 1;
             coach.availableSeats[i] -= n;
@@ -64,7 +64,7 @@ app.post('/bookSeats', async (req, res) => {
   if (!booked) {
     let emptySeats = [];
     for (let i = 0; i < 11; i++) {
-      for (let j = 0; j < 8; j++) {
+      for (let j = 0; j < 7; j++) {
         if (coach.seats[i][j] === 0) emptySeats.push([i, j]);
       }
     }
@@ -119,12 +119,12 @@ app.delete('/delete', async (req, res) => {
   let coach = await Coach.findOne({coachId:1}).lean();
   if(!coach) return;
   for (let i = 0; i < 11; i++) {
-    for (let j = 0; j < 8; j++) {
+    for (let j = 0; j < 7; j++) {
       coach.seats[i][j] = 0;
     }
   }
   coach.seats[10].fill(-2, 3);
-  coach.availableSeats = Array(11).fill(8);
+  coach.availableSeats = Array(11).fill(7);
   coach.availableSeats[10] = 3;
   
   await Coach.updateOne({coachId:1}, coach);
