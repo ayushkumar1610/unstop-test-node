@@ -14,6 +14,7 @@ const coachSchema = new mongoose.Schema({
 });
 
 const Coach = mongoose.model('Coach', coachSchema);
+const totalRow = 12;
 
 // API to book seats in a coach
 app.post('/bookSeats', async (req, res) => {
@@ -29,14 +30,14 @@ app.post('/bookSeats', async (req, res) => {
     firstFlg = 1;
     coach = new Coach({
       coachId: 1,
-      seats: Array(11).fill().map(() => Array(7).fill(0)),
-      availableSeats: Array(11).fill(7)
+      seats: Array(totalRow).fill().map(() => Array(7).fill(0)),
+      availableSeats: Array(totalRow).fill(7)
     });
-    coach.seats[10].fill(-2, 3);
-    coach.availableSeats[10] = 3;
+    coach.seats[totalRow-1].fill(-2, 3);
+    coach.availableSeats[totalRow-1] = 3;
   }
 
-  for (let i = 0; i < 11; i++) {
+  for (let i = 0; i < totalRow; i++) {
     for (let j = 0; j < 7; j++) {
       if (coach.seats[i][j] === 1) {
         coach.seats[i][j] = -1;
@@ -45,7 +46,7 @@ app.post('/bookSeats', async (req, res) => {
   }
 
   let booked = false;
-  for (let i = 0; i < 11 && !booked; i++) {
+  for (let i = 0; i < totalRow && !booked; i++) {
     if (coach.availableSeats[i] >= n) {
       for (let j = 0; j < 7 && !booked; j++) {
         if (coach.seats[i][j] === 0) {
@@ -63,7 +64,7 @@ app.post('/bookSeats', async (req, res) => {
 
   if (!booked) {
     let emptySeats = [];
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < totalRow; i++) {
       for (let j = 0; j < 7; j++) {
         if (coach.seats[i][j] === 0) emptySeats.push([i, j]);
       }
@@ -118,14 +119,14 @@ app.get('/seatStatus', async (req, res) => {
 app.delete('/delete', async (req, res) => {
   let coach = await Coach.findOne({coachId:1}).lean();
   if(!coach) return;
-  for (let i = 0; i < 11; i++) {
+  for (let i = 0; i < totalRow; i++) {
     for (let j = 0; j < 7; j++) {
       coach.seats[i][j] = 0;
     }
   }
-  coach.seats[10].fill(-2, 3);
-  coach.availableSeats = Array(11).fill(7);
-  coach.availableSeats[10] = 3;
+  coach.seats[totalRow-1].fill(-2, 3);
+  coach.availableSeats = Array(totalRow).fill(7);
+  coach.availableSeats[totalRow-1] = 3;
   
   await Coach.updateOne({coachId:1}, coach);
   res.send({
